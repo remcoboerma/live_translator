@@ -1,0 +1,5 @@
+assemblyai[extras]
+pyinvoke
+edwh
+httpx
+anyio
