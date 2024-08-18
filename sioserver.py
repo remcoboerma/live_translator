@@ -1,24 +1,24 @@
 #!.venv/bin/python3
+import asyncio
 import os
+import signal
+
 import uvicorn
 import socketio
 import logging
-
-# --------------- global ------------------------------------------
-
+import edwh
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s %(levelname)s %(name)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
 )
 
 logger = logging.getLogger(__name__)
 
-PORT = int(os.getenv("SIO_PORT", 31979))
-HOST = os.getenv("SIO_HOST", "127.0.0.1")
+PORT = int(edwh.get_env_value("SIO_PORT", '31979'))
+HOST = edwh.get_env_value("SIO_HOST", "127.0.0.1")
 SERV_APP_FILE = "sioserver:app"
 
 logger.debug(f"===: {SERV_APP_FILE}")
 
-# ------------------------------------
 sio = socketio.AsyncServer(
     async_mode="asgi",
     cors_allowed_origins="*",
@@ -27,28 +27,27 @@ sio = socketio.AsyncServer(
     engineio_logger=True,
 )
 
-# https://github.com/abersheeran/a2wsgi
-
+# host the index.html as the basis, include sio.js with all it's files under the /sio.js folder.
 app = socketio.ASGIApp(sio, static_files={"/": "./index.html", '/sio.js':'./sio.js/'})
 
+# message handlers message handlers message handlers message handlers message handlers message handlers message
 
-@sio.on("demo")
-async def demo(sid, data):
-    logger.info(f"!> DEMO HANDLER@{sid} {data!r}")
-    await sio.emit('demo', data)
+@sio.on('exit')
+async def stop_this_server(event, sid, data):
+    await sio.emit(event, data)
+    asyncio.sleep(3)
+    import os
+    os.kill(os.getpid(), signal.SIGINT)
+    os.kill(os.getpid(), signal.SIGINT)
+    os.kill(os.getpid(), signal.SIGINT)
 
 @sio.on("*")
-async def collect_finals(event, sid, data):
-    logger.info(f"!> CATCHALL HANDLER {event!r}@{sid} {data!r}")
+async def broadcast(event, sid, data):
+    logger.info(f"!> CATCHALL BROADCASTER {event!r}@{sid} {data!r}")
     await sio.emit(event, data)
 
-    # async def messageReceived(
-    #     methods=["GET", "POST"],
-    # ):
-    #     logger.debug("final was received!!!")
-    # await sio.emit("my_response", json, )
-    # await sio.emit("my_response", json, room=sid, callback=messageReceived)
 
+# main main main main main main main main main main main main main main main main main main main main main main main
 if __name__ == "__main__":
     uvicorn.run(
         app=SERV_APP_FILE,

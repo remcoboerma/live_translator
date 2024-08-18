@@ -1,10 +1,13 @@
 #!.venv/bin/python3
 import socketio
-
+import edwh
 
 
 with socketio.SimpleClient(ssl_verify=False, logger=True, engineio_logger=True) as sio:
-    sio.connect('http://127.0.0.1:31979')
+    sio.connect(edwh.get_env_value('SIO_URL'))
     while True:
-        event = sio.receive()
-        print(f"simple!> {event!r}")
+        message, data = sio.receive()
+        print(f"simple!> {message!r} - {data!r}")
+        if message == 'exit':
+            break
+    sio.disconnect()
