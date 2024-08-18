@@ -73,8 +73,8 @@ def translate(c: Context):
                 },
                 {"content": text, "role": "user"},
             ],
-            "max_tokens": 0,
-            "temperature": 0.2,
+            "max_tokens": 200,
+            "temperature": 0.01,
             "top_p": 0.9,
             "return_citations": False,
             "return_images": False,
@@ -113,13 +113,21 @@ def translate(c: Context):
     with httpx.Client() as client:
         for line in fileinput.input("-"):
             try:
-                print(line)
-                if line.startswith("final:"):
-                    input = line.split("final:")[1].strip()
-                    translated_text = gpt(client, api_key, input)
+                doc = json.loads(line)
+                if doc['type'] == 'final':
+                    translated_text = gpt(client, api_key, doc['text'])
                     print("translated:", translated_text)
+                else:
+                    print('...',doc['text'], end='\r')
+            except json.JSONDecodeError:
+                print(line)
             except PplxError as e:
-                print("An error occurred:", e)
+                print('PPLX says no. ')
+                print(e)
+            except:
+                print(line, end='')
+                print("An error occurred:")
+                raise
 
 
 @task

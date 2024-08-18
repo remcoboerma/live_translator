@@ -11,7 +11,18 @@ You might need to pip install either, probably `pip install pyinvoke`.
 1. run the server using `./sioserver.py`, open the browser on `http://127.0.0.1:31979` to start the js client.
 1. `invoke demo-final` starts the `demo_final` task from tasks.py to spawn dummy demo events
 2. `./test_client.py` starts the 'regular' test client.
-3. `./test_simpleclient.py` starts the
+3. `./test_simpleclient.py` starts the simple test client... 
+
+## Starting something more useful. 
+The recording and translation part doesn't use the socketio at the moment. Notyet. 
+So here's my poor-mans choice for getting inter process communication working without async, threads and all that. 
+I mean, this is basically still single-direction pipes you know!
+
+```shell
+$ ew local.stream | ew local.translate
+```
+All hail the `lineinput` module and `sys.stdout.flush()`. 
+
 
 ## What i didn't know:
 > **broadcasting to other clients is restricted to `server` emits only.**
