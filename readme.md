@@ -1,5 +1,18 @@
 ![Peek 2024-08-18 02-33.gif](./docs/imgs/Peek 2024-08-18 02-33.gif)
 
+## Configuring and most dependency management
+
+Start with a clean environment (in `./.venv`) and mostly use `edwh setup` or `invoke setup` if you don't use our edwh
+tool.
+You might need to pip install either, probably `pip install pyinvoke`.
+
+## Starting
+
+1. run the server using `./sioserver.py`, open the browser on `http://127.0.0.1:31979` to start the js client.
+1. `invoke demo-final` starts the `demo_final` task from tasks.py to spawn dummy demo events
+2. `./test_client.py` starts the 'regular' test client.
+3. `./test_simpleclient.py` starts the
+
 ## What i didn't know:
 > **broadcasting to other clients is restricted to `server` emits only.**
 
