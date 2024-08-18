@@ -1,5 +1,6 @@
 import json
 import queue
+import time
 
 import edwh
 from edwh import check_env
@@ -47,11 +48,11 @@ def setup(c: Context):
         "your key here",
         "Enter your assembly AI key, see https://www.assemblyai.com/app/",
     )
-    # check_env(
-    #     "PPLX_API_KEY",
-    #     "your key here",
-    #     "Enter your Perplexity API key, see https://www.perplexity.ai/settings/api",
-    # )
+    check_env(
+        "PPLX_API_KEY",
+        "your key here",
+        "Enter your Perplexity API key, see https://www.perplexity.ai/settings/api",
+    )
 
 
 class PplxError(Exception): ...
@@ -122,14 +123,27 @@ def translate(c: Context):
 
 
 @task
+def serve(c:Context):
+    print('Serving on http://127.0.0.1:31979')
+    c.run('uvicorn sioserver:app --reload')
+
+
+@task
 def stream(c: Context):
-    # Start by making sure the `assemblyai` package is installed.
-    # If not, you can install it by running the following command:
-    # pip install -U assemblyai
-    #
-    # Then, make sure you have PyAudio installed: https://pypi.org/project/PyAudio/
-    #
-    # Note: Some macOS users might need to use `pip3` instead of `pip`.
+    """
+    Record audio and stream jsonp to stdout.
+        {
+            1 'type':[final|intermediate],
+            1 'text':'received text'
+        }
+
+    The intermediate results are live but needn't be as readable.
+
+
+    :param c:
+    :return:
+    """
+
     import sys
     import assemblyai as aai
 
@@ -155,24 +169,24 @@ def stream(c: Context):
 
         if isinstance(transcript, aai.RealtimeFinalTranscript):
             # final version, with capitalization and all
-            print("final:", transcript.text)
+            print(json.dumps(dict(type='final', text=transcript.text)))
+            # print("final:", transcript.text)
             # print(transcript.text, end="\r\n")
             # print(translate(transcript), end="\r\n")
 
         else:
-            print("intermediate:", transcript.text)
+            # print("intermediate:", transcript.text)
+            print(json.dumps(dict(type='intermediate', text=transcript.text)))
             # in between version, words appends. Will change until Final
             # print(transcript.text, end="\r")
         sys.stdout.flush()
 
     def on_error(error: aai.RealtimeError):
         "This function is called when the connection has been closed."
-
-        print("error:", error)
+        print("AssemblyAI rror:", error)
 
     def on_close():
         "This function is called when the connection has been closed."
-
         print("Closing Session")
 
     transcriber = aai.RealtimeTranscriber(
@@ -193,3 +207,16 @@ def stream(c: Context):
     transcriber.stream(microphone_stream)
 
     transcriber.close()
+
+@task
+def demo_final(c:Context):
+    import socketio
+    with socketio.SimpleClient(ssl_verify=False, logger=True, engineio_logger=True) as sio:
+        sio.connect('http://127.0.0.1:31979')
+        cnt = 1356
+        while True:
+            cnt += 111
+            sio.emit('demo',cnt)
+            time.sleep(2)
+            # event = sio.receive()
+            # print(f"!> {event!r}")
