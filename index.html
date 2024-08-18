@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Test</title>
+    <script src="http://127.0.0.1:31979/sio.js/socket.io.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let socket = io.connect("http://127.0.0.1:31979");
+            console.log('listening');
+            socket.on("final", function (data) {
+                console.log('final received');
+                document.getElementById("finalEvent").innerText = data;
+            });
+            socket.on("demo", function (data) {
+                console.log('demo received');
+                document.getElementById("finalEvent").innerText = data;
+            });
+        });
+    </script>
+</head>
+<body>
+Event "final" output:
+<div id="finalEvent">will be overwritten</div>
+</body>
+</html>
