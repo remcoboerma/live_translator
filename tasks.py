@@ -213,10 +213,10 @@ def demo_final(c:Context):
     import socketio
     with socketio.SimpleClient(ssl_verify=False, logger=True, engineio_logger=True) as sio:
         sio.connect('http://127.0.0.1:31979')
-        cnt = 1356
+        cnt = 0
         while True:
-            cnt += 111
+            cnt += 1
             sio.emit('demo',cnt)
-            time.sleep(2)
+            time.sleep(0.2)
             # event = sio.receive()
             # print(f"!> {event!r}")
