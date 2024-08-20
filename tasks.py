@@ -106,11 +106,14 @@ def translate_loop(gpt: callable):
                 translated_buffer.append(translated_text)
 
                 # beautify the buffer, create a line with transparency gradient
+                indexed_translation = list(
+                    zip(range(5, 1, -1), translated_buffer[::-1])
+                )[::-1]
                 html_lines = [
                     f"<span id=line-{i}>{line}</span>"
-                    for i, line in enumerate(translated_buffer)
+                    for i, line in indexed_translation
                 ]
-                html_lines.insert(len(html_lines) - 1, "<br/>")
+                html_lines.insert(len(html_lines) - 1, "<hr/>")
                 html_fragment = "\n".join(html_lines)
 
                 # send this to the webbrowser
