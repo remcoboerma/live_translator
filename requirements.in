@@ -6,3 +6,7 @@ anyio
 uvicorn
 python-socketio~=5.11 # required for the javascript version to be compatible, see pypi page!
 websocket-client
+
+transformers
+sentencepiece
+sacremoses
