@@ -110,6 +110,7 @@ def translate_loop(gpt: callable):
                     f"<span id=line-{i}>{line}</span>"
                     for i, line in enumerate(translated_buffer)
                 ]
+                html_lines.insert(len(html_lines) - 1, "<br/>")
                 html_fragment = "\n".join(html_lines)
 
                 # send this to the webbrowser
@@ -314,11 +315,11 @@ def demo_message(c: Context):
 
 @task
 def go(c: Context):
-    c.run("ew local.serve &", disown=True)
-    c.run("ew local.translate &", disown=True)
-    c.run("ew local.stream &", disown=True)
-    c.run("ew local.web &", disown=True)
-    c.run("jobs")
+
+    c.run("inv serve &", disown=True)
+    c.run("inv translate &", disown=True)
+    c.run("inv stream &", disown=True)
+    c.run("inv web &", disown=True)
 
 
 @task
