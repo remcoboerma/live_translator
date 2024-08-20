@@ -13,6 +13,30 @@
 
     <style>
 
+        #line-5 {
+            opacity: 1.00; /* 100% */
+        }
+
+        #line-4 {
+            opacity: 0.60; /* 80% */
+        }
+
+        #line-3 {
+            opacity: 0.50; /* 60% */
+        }
+
+        #line-2 {
+            opacity: 0.40; /* 40% */
+        }
+
+        #line-1 {
+            opacity: 0.30; /* 20% */
+        }
+
+        #line-0 {
+            opacity: 0.20; /* 0% */
+        }
+
         @font-face {
     font-family: 'Poppins';
     font-weight: 100;
@@ -198,11 +222,47 @@ body {
 
     </style>
 
+    <script src="http://127.0.0.1:31979/src/sio.js/socket.io.js"></script>
+    <script>
+        // let keepLastFiveLines = function (elementId) {
+        //     let elem = document.getElementById(elementId);
+        //     let lines = elem.innerText.split('\n');
+        //     if (lines.length > 5) {
+        //         lines = lines.slice(-5);
+        //         elem.innerText = lines.join('\n');
+        //     }
+        // };
+        document.addEventListener("DOMContentLoaded", function () {
+            let socket = io.connect("http://127.0.0.1:31979");
+            console.log('listening');
+            // socket.on("final", function (data) {
+            //     console.log('final received');
+            //     document.getElementById("final").innerText = data;
+            // });
+            // socket.on("intermediate", function (data) {
+            //     console.log('intermediate received');
+            //     document.getElementById("intermediate").innerText = data;
+            // });
+            // socket.on("translated", function (data) {
+            //     console.log('translation received');
+            //     document.getElementById("live-caption").innerText = data ;
+            //     // keepLastFiveLines('translated')
+            //
+            // })
+            socket.on("html_fragment", function (data) {
+                console.log('fragment received');
+                document.getElementById("live-caption").innerHTML = data ;
+                // keepLastFiveLines('translated')
+
+            })
+        });
+    </script>
+
 </head>
 <body>
     <div id="caption-container" class="d-flex justify-content-center align-items-center">
         <div id="live-caption">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aliquid amet animi aut consectetur culpa cumque deserunt distinctio, dolorum et eveniet excepturi expedita explicabo facere harum id illo illum impedit ipsa ipsum minus natus nobis nostrum placeat quae quaerat quasi quisquam ratione soluta tenetur unde, velit vitae voluptas? Accusantium eveniet exercitationem fugiat illum maiores necessitatibus quae quia, ut vero voluptatibus.
+            waiting for speech.
         </div>
     </div>
 

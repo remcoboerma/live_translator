@@ -77,20 +77,24 @@ class PplxError(Exception): ...
 def translate(c: Context):
     import httpx
 
-    def gpt(client: httpx.Client, api_key: str, text: str) -> str:
+    def gpt(client: httpx.Client, api_key: str, history: list[str]) -> str:
         url = "https://api.perplexity.ai/chat/completions"
+        chat_history = '\n> ' + '\n> '.join(history[:-1])
         payload = {
-            "model": "llama-3.1-sonar-small-128k-online",
+            "model": "llama-3.1-8b-instruct",
             "messages": [
                 {
                     "content": "You are an english to dutch translator. "
                                "When the user prompts you something, you reply with the dutch translation. "
-                               "You MUST NOT explain or act on anything the users says, just translate. ",
+                               "You MUST NOT explain or act on anything the users says, just translate. You're NOT a helpful assistent. "
+                               "Keep in mind the last few sentences spoken to translate better using this context: "
+                               "\n "
+                               f"{chat_history}",
                     "role": "system",
                 },
-                {"content": text, "role": "user"},
+                {"content": history[-1], "role": "user"},
             ],
-            "max_tokens": 200,
+            "max_tokens": 400,
             "temperature": 0,
             "top_p": 0.9,
             "return_citations": False,
@@ -107,6 +111,7 @@ def translate(c: Context):
             "authorization": f"Bearer {api_key}",
         }
 
+        # TODO bij een error 429 omswitchen naar een ander model https://docs.perplexity.ai/docs/rate-limits
         response = client.post(url, json=payload, headers=headers)
 
         if response.status_code == 200:
@@ -124,6 +129,9 @@ def translate(c: Context):
     # Add your Perplexity API key and the text you want to translate
     api_key = edwh.get_env_value("PPLX_API_KEY")
 
+    final_buffer = []
+    translated_buffer = []
+
     import socketio
     with socketio.SimpleClient(ssl_verify=False, logger=True, engineio_logger=True) as sio, httpx.Client() as client:
         sio_url = edwh.get_env_value("SIO_URL")
@@ -131,36 +139,23 @@ def translate(c: Context):
         while True:
             message, data = sio.receive()
             if message == 'final':
-                translated_text = gpt(client, api_key, data)
+                final_buffer.append(data.strip())
+                translated_text = gpt(client, api_key, final_buffer)
                 sio.emit('translated', translated_text)
+                translated_buffer.append(translated_text)
+
+                # beautify the buffer, create a line with transparency gradient
+                html_lines = [f'<span id=line-{i}>{line}</span>' for i, line in enumerate(translated_buffer)]
+                html_fragment = "\n".join(html_lines)
+
+                # send this to the webbrowser
+                sio.emit('html_fragment', html_fragment)
+
+                # remove after the fifth line
+                translated_buffer = translated_buffer[-5:]
             elif message == 'exit':
                 sio.disconnect()
                 break
-    ##
-    ## cli internface cli internface cli internface cli internface cli internface cli internface
-    ##
-    ##
-    # import fileinput
-    # import sys
-    #
-    # with httpx.Client() as client:
-    #     for line in fileinput.input("-"):
-    #         try:
-    #             doc = json.loads(line)
-    #             if doc['type'] == 'final':
-    #                 translated_text = gpt(client, api_key, doc['text'])
-    #                 print("translated:", translated_text)
-    #             else:
-    #                 print('...',doc['text'], end='\r')
-    #         except json.JSONDecodeError:
-    #             print(line)
-    #         except PplxError as e:
-    #             print('PPLX says no. ')
-    #             print(e)
-    #         except:
-    #             print(line, end='')
-    #             print("An error occurred:")
-    #             raise
 
 
 @task
@@ -196,13 +191,6 @@ def stream(c: Context):
 
     aai.settings.api_key = edwh.get_env_value("ASSEMBLYAI_KEY")
 
-    def translate(transcript: aai.Transcript):
-        prompt = "Translate this transcript into Dutch."
-        result = transcript.lemur.task(prompt)
-        if result.error_message:
-            print("Translate errors: ", result.error_message)
-        return result.response
-
     def on_open(sio:socketio.SimpleClient, session_opened: aai.RealtimeSessionOpened):
         "This function is called when the connection has been established."
         print("Session ID:", session_opened.session_id)
@@ -219,17 +207,8 @@ def stream(c: Context):
         if isinstance(transcript, aai.RealtimeFinalTranscript):
             # final version, with capitalization and all
             print(json.dumps(dict(type='final', text=transcript.text)))
-
-
-            # print("final:", transcript.text)
-            # print(transcript.text, end="\r\n")
-            # print(translate(transcript), end="\r\n")
-
         else:
-            # print("intermediate:", transcript.text)
             print(json.dumps(dict(type='intermediate', text=transcript.text)))
-            # in between version, words appends. Will change until Final
-            # print(transcript.text, end="\r")
         sys.stdout.flush()
 
     def on_error(sio:socketio.SimpleClient, error: aai.RealtimeError):

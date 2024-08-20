@@ -28,7 +28,7 @@ sio = socketio.AsyncServer(
 )
 
 # host the index.html as the basis, include sio.js with all it's files under the /sio.js folder.
-app = socketio.ASGIApp(sio, static_files={"/": "./index.html", '/sio.js':'./sio.js/'})
+app = socketio.ASGIApp(sio, static_files={"/": "./index.html", "/test":"./test.html", '/src':'./src/'})
 
 # message handlers message handlers message handlers message handlers message handlers message handlers message
 
