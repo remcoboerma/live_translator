@@ -1,71 +1,330 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Socket.IO Test</title>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Captions</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Captions</title>
+       <link href="https://fonts.cdnfonts.com/css/open-dyslexic" rel="stylesheet">
+
+    <style>
+
+        #line-5 {
+            opacity: 1.00; /* 100% */
+        }
+
+        #line-4 {
+            opacity: 0.60; /* 80% */
+        }
+
+        #line-3 {
+            opacity: 0.50; /* 60% */
+        }
+
+        #line-2 {
+            opacity: 0.40; /* 40% */
+        }
+
+        #line-1 {
+            opacity: 0.30; /* 20% */
+        }
+
+        #line-0 {
+            opacity: 0.20; /* 0% */
+        }
+
+        @font-face {
+    font-family: 'Poppins';
+    font-weight: 100;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-Thin.eot');
+    src: url('/src/fonts/Poppins-Thin.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-Thin.woff2') format('woff2'),
+         url('/src/fonts/Poppins-Thin.woff') format('woff'),
+         url('/src/fonts/Poppins-Thin.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 200;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-ExtraLight.eot');
+    src: url('/src/fonts/Poppins-ExtraLight.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-ExtraLight.woff2') format('woff2'),
+         url('/src/fonts/Poppins-ExtraLight.woff') format('woff'),
+         url('/src/fonts/Poppins-ExtraLight.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 300;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-Light.eot');
+    src: url('/src/fonts/Poppins-Light.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-Light.woff2') format('woff2'),
+         url('/src/fonts/Poppins-Light.woff') format('woff'),
+         url('/src/fonts/Poppins-Light.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-Regular.eot');
+    src: url('/src/fonts/Poppins-Regular.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-Regular.woff2') format('woff2'),
+         url('/src/fonts/Poppins-Regular.woff') format('woff'),
+         url('/src/fonts/Poppins-Regular.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-Medium.eot');
+    src: url('/src/fonts/Poppins-Medium.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-Medium.woff2') format('woff2'),
+         url('/src/fonts/Poppins-Medium.woff') format('woff'),
+         url('/src/fonts/Poppins-Medium.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-SemiBold.eot');
+    src: url('/src/fonts/Poppins-SemiBold.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-SemiBold.woff2') format('woff2'),
+         url('/src/fonts/Poppins-SemiBold.woff') format('woff'),
+         url('/src/fonts/Poppins-SemiBold.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 700;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-Bold.eot');
+    src: url('/src/fonts/Poppins-Bold.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-Bold.woff2') format('woff2'),
+         url('/src/fonts/Poppins-Bold.woff') format('woff'),
+         url('/src/fonts/Poppins-Bold.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 800;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-ExtraBold.eot');
+    src: url('/src/fonts/Poppins-ExtraBold.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-ExtraBold.woff2') format('woff2'),
+         url('/src/fonts/Poppins-ExtraBold.woff') format('woff'),
+         url('/src/fonts/Poppins-ExtraBold.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 900;
+    font-style: normal;
+    src: url('/src/fonts/Poppins-Black.eot');
+    src: url('/src/fonts/Poppins-Black.eot?#iefix') format('embedded-opentype'),
+         url('/src/fonts/Poppins-Black.woff2') format('woff2'),
+         url('/src/fonts/Poppins-Black.woff') format('woff'),
+         url('/src/fonts/Poppins-Black.ttf') format("truetype");
+    font-display: swap;
+} 
+        
+/* Apply the gradient and image as a background to the body */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(60deg, rgba(40, 40, 91, 1) 0%, rgba(232, 60, 110, 1) 94%),
+                url("https://gelijke-kansennu.swipepages.media/2024/7/669b91370932560011ae4c5d/bg_gelijke-kansen_b2-1500.webp");
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay; /* Ensure the gradient overlays the image */
+}
+        /* Poppins font as the default */
+.poppins-font {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* OpenDyslexic font */
+.opendyslexic-font {
+    font-family: 'Open-Dyslexic', sans-serif;
+}
+
+/* Container to hold the caption */
+#caption-container {
+    width: 90%; /* Adjust as needed */
+    height: 80%; /* Adjust as needed */
+    padding: 50px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Caption text styling */
+#live-caption {
+    color: white; /* Text color */
+    font-size: 6vw; /* Initial font size, adjustable via slider */
+    font-weight: bold;
+    line-height: 1.4; /* Increased line spacing */
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+/* Settings Menu Styles */
+#settings-menu {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    opacity: 0;
+    display: block;
+    z-index: 1000;
+}
+
+/* Show the settings menu when hovering over the bottom-right corner */
+#settings-menu:hover {
+    opacity: 1;
+}
+
+#settings-menu label {
+    color: white;
+    margin-right: 10px;
+}
+
+#fontSizeSlider {
+    width: 150px;
+}
+
+    </style>
+
     <script src="http://127.0.0.1:31979/src/sio.js/socket.io.js"></script>
     <script>
-        let keepLastFiveLines = function (elementId) {
-            let elem = document.getElementById(elementId);
-            let lines = elem.innerText.split('\n');
-            if (lines.length > 5) {
-                lines = lines.slice(-5);
-                elem.innerText = lines.join('\n');
-            }
-        };
+        // let keepLastFiveLines = function (elementId) {
+        //     let elem = document.getElementById(elementId);
+        //     let lines = elem.innerText.split('\n');
+        //     if (lines.length > 5) {
+        //         lines = lines.slice(-5);
+        //         elem.innerText = lines.join('\n');
+        //     }
+        // };
         document.addEventListener("DOMContentLoaded", function () {
             let socket = io.connect("http://127.0.0.1:31979");
             console.log('listening');
-            socket.on("final", function (data) {
-                console.log('final received');
-                document.getElementById("final").innerText = data;
-            });
-            socket.on("intermediate", function (data) {
-                console.log('intermediate received');
-                document.getElementById("intermediate").innerText = data;
-            });
-            socket.on("translated", function (data) {
-                console.log('translation received');
-                document.getElementById("translated").innerText += data + '\n';
-                keepLastFiveLines('translated')
+            // socket.on("final", function (data) {
+            //     console.log('final received');
+            //     document.getElementById("final").innerText = data;
+            // });
+            // socket.on("intermediate", function (data) {
+            //     console.log('intermediate received');
+            //     document.getElementById("intermediate").innerText = data;
+            // });
+            // socket.on("translated", function (data) {
+            //     console.log('translation received');
+            //     document.getElementById("live-caption").innerText = data ;
+            //     // keepLastFiveLines('translated')
+            //
+            // })
+            socket.on("html_fragment", function (data) {
+                console.log('fragment received');
+                document.getElementById("live-caption").innerHTML = data ;
+                // keepLastFiveLines('translated')
 
             })
         });
     </script>
-    <style>
-        #translated, #final, #intermediate {
-            width: 100vw;
-            word-wrap: break-word;
-            overflow-y: auto;
-            background-color: lightgrey;
-            font-size: 200%;
 
-        }
-
-        #intermediate {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 200%;
-            color: black;
-        }
-
-        #translated {
-            font-family: 'Courier New', Courier, monospace;
-            color: black;
-            background-color: white;
-        }
-
-
-        body {
-            display: grid;
-            grid-template-rows: 2fr 1fr 2fr;
-            min-height: 100vh;
-            padding: 0;
-            margin: 0;
-        }
-    </style>
 </head>
 <body>
-<div id="translated"></div>
-<div id="final"></div>
-<div id="intermediate"></div>
+    <div id="caption-container" class="d-flex justify-content-center align-items-center">
+        <div id="live-caption">
+            waiting for speech.
+        </div>
+    </div>
+
+    <!-- Hidden Settings Menu -->
+    <div id="settings-menu">
+        <label for="fontSizeSlider">Font Size:</label>
+        <input type="range" id="fontSizeSlider" min="10" max="100" value="60">
+
+        <div>
+            <label for="fontToggle">Font:</label>
+            <select id="fontToggle">
+                <option value="poppins">Poppins</option>
+                <option value="opendyslexic">OpenDyslexic</option>
+            </select>
+        </div>
+    </div>
+<script>
+// Function to adjust font size based on slider value
+function adjustFontSize() {
+    const slider = document.getElementById('fontSizeSlider');
+    const caption = document.getElementById('live-caption');
+    const container = document.getElementById('caption-container');
+
+    // Get the padding values from the container
+    const paddingX = parseFloat(window.getComputedStyle(container).paddingLeft) + parseFloat(window.getComputedStyle(container).paddingRight);
+    const paddingY = parseFloat(window.getComputedStyle(container).paddingTop) + parseFloat(window.getComputedStyle(container).paddingBottom);
+
+    // Set the font size based on the slider value
+    caption.style.fontSize = slider.value + 'px';
+
+    // Ensure text does not overflow the container, accounting for padding
+    while (caption.scrollWidth > container.clientWidth - paddingX || caption.scrollHeight > container.clientHeight - paddingY) {
+        const currentFontSize = parseFloat(window.getComputedStyle(caption, null).getPropertyValue('font-size'));
+        if (currentFontSize <= 10) break; // Prevent font size from getting too small
+        slider.value = currentFontSize - 1;
+        caption.style.fontSize = (currentFontSize - 1) + 'px';
+    }
+}
+
+// Function to toggle between Poppins and OpenDyslexic fonts
+function toggleFont() {
+    const fontToggle = document.getElementById('fontToggle');
+    const body = document.body;
+
+    if (fontToggle.value === 'opendyslexic') {
+        body.classList.remove('poppins-font');
+        body.classList.add('opendyslexic-font');
+    } else {
+        body.classList.remove('opendyslexic-font');
+        body.classList.add('poppins-font');
+    }
+}
+
+// Event listener for slider input
+document.getElementById('fontSizeSlider').addEventListener('input', adjustFontSize);
+
+// Event listener for font toggle
+document.getElementById('fontToggle').addEventListener('change', toggleFont);
+
+// Initial adjustment on page load
+adjustFontSize();
+
+</script>
 </body>
 </html>
